@@ -1,106 +1,167 @@
 import React from 'react'
+import DrawElements from './DrawElements'
 
-class App extends React.Component{
-    constructor(props){
-        super(props)
-        this.state = {
-                memes : [],
-                currentText : {
-                    top : "",
-                    bottom : ""
-                }
-        }
-        this.handleInput = this.handleInput.bind(this)
-        this.insertText = this.insertText.bind(this)   
-    }
 
-    handleInput(e){
-        
-        e.preventDefault()
-        console.log(e.target.id)
-        console.log(e.target.value)
- 
-        if(e.target.id === "top"){
-            const top = e.target.value
-            this.setState({
-                  currentText : {
-                       top : top,
-                       bottom : this.state.currentText.bottom
-                     } 
-            })
-        }  
-        if(e.target.id === "bottom"){
-            const bottom = e.target.value
-            this.setState({
-                  currentText : {
-                       top : this.state.currentText.top,
-                       bottom : bottom
-                     } 
-            })
-        }    
-     
-    }
-    
-   
-    draw() {    
-        var ctx = document.getElementById('canvas').getContext('2d')
-        var img = new Image()
-        var f = document.getElementById("uploadimage").files[0]
-        var url = window.URL || window.webkitURL
-        var src = url.createObjectURL(f);
-        img.src = src;
-        img.onload = function(){
-        ctx.drawImage(img,0,0);
-        url.revokeObjectURL(src);
+function GenId(){
+    var d = new Date();
+    var t = d.getTime();
+    return t
+}
+
+
+
+function RandPos(){
+    return Math.floor(Math.random() * 720) + 50;
+}
+function GenChemElemTXT(){
+    var e = Math.floor(Math.random() * 10) + 0;
+    var eList = ["F","H","O","Au","Co","Mn","N","Li","Na","Mg","Ca"]
+    return eList[e]
+}
+
+ class App extends React.Component {
+     constructor(props){
+         super(props)
+         this.state = {
+              element : {
+                  id :  GenId(),
+                  name : "Fe",
+                  x : 200,
+                  y : 200,
+                  color : "white",
+                  txtColor : "black",
+                  sizeTxt : 20,
+                  size : 20,
+                  step : 1,
+                  dX : -1,
+                  dY : 1        
+              },
+              elementList : []
+              
          }
-         
-    }
+         this.addElement = this.addElement.bind(this)
+         this.moveElement = this.moveElement.bind(this)
+         this.clearCanvas = this.clearCanvas.bind(this)
 
-    insertText(top, bottom){
-        console.log(top.length, bottom.length)
-        
-         
-        var canvas = document.getElementById("canvas");
-        var ctx = canvas.getContext("2d");
-        ctx.strokeStyle = 'black';
-        ctx.font = "50px Arial";
-        ctx.miterLimit = 3;
-        ctx.lineJoin = 'circle';
-        ctx.lineWidth = 7;
-        ctx.strokeText(top, (canvas.width/2)-(top.length*12), 50);
-        ctx.strokeText(bottom, (canvas.width/2)-(bottom.length*12), 580);
-        ctx.fillStyle = 'white';
-        ctx.lineWidth = 4;
-        ctx.fillText(top, (canvas.width/2)-(top.length*12), 50);
-        ctx.fillText(bottom, (canvas.width/2)-(bottom.length*12), 580);
-        
-    }
+     }
 
-    downloadImg(){
-           var link = document.createElement('a');
-           link.download = 'filename.png';
-           link.href = document.getElementById('canvas').toDataURL()
-           link.click();
-    }
-    
-    render(){
-        return(
-            <div className="main">
-                <header>Meme generator</header>
-                 <div className="container">
-                    <div className="left-c">
-                        <p>Do magic</p>
-                        <input type='file' onChange={this.draw} name='img' size='65' id='uploadimage' /><br></br>
-                        <input className="inp" type="text" id="top"  onChange={this.handleInput} value={this.state.currentText.top} placeholder="top..." /><br></br>
-                        <input className="inp"  type="text" id="bottom" onChange={this.handleInput} value={this.state.currentText.bottom} placeholder="bottom..." /><br></br><br></br>
-                        <button onClick = {()=>this.insertText(this.state.currentText.top,this.state.currentText.bottom)}>Generate meme</button><br></br>
-                        <button onClick={this.downloadImg}>Download meme</button>
-                    </div>
-                    <div className="right-c">
-                        <p>Your Meme</p>
-                        <canvas id="canvas" height="620" width="620"></canvas>              
-                    </div>
-                 </div>
+     addElement(e){
+         e.preventDefault()
+         var currentElementList = this.state.elementList;
+         var element = this.state.element
+         var newElementList = [...currentElementList, element]
+         this.setState({
+             elementList : newElementList,
+             element : {
+                  id :  GenId(),
+                  name : GenChemElemTXT(),
+                  x : RandPos(),
+                  y : RandPos(),
+                  color : "white",
+                  txtColor : "black",
+                  sizeTxt : 20,
+                  size : 20,
+                  step : 1,
+                  dX : 1,
+                  dY : 1       
+              },
+         })
+         //console.log(currentElementList)
+     }
+
+     
+
+     moveElement(){
+         this.clearCanvas()
+         var elements = this.state.elementList;
+         for(var i = 0; i<elements.length-1; i++){
+             for(var j = i+1; j<elements.length; j++){
+                   var a = Math.abs(elements[i].x-elements[j].x)
+                   var b = Math.abs(elements[i].y-elements[j].y)
+                   var h = Math.sqrt(a**2+b**2)
+                if(
+                    h <= elements[i].size+elements[j].size &&
+                    h <= elements[i].size+elements[j].size)
+                    {    
+                         var elmSize = 
+                                        elements[i].size > elements[j].size? 
+                                        elements[i].size + (elements[j].size)/2 :       
+                                        elements[j].size + (elements[i].size)/2 
+                                       
+
+                         elements[i].size = elmSize
+                         elements[i].sizeTxt = elmSize/4
+                         elements[i].name += '-'+elements[j].name   
+                         console.log(elements.indexOf(elements[j]))
+                         elements = elements.filter((element)=>element!==elements[j])
+                         console.log(elements)
+                         console.log("Collision")
+                         elements[i].color = "Red" 
+                         break
+                    }
+            }
+         }
+
+         var newPos = elements.map((element)=>{
+                if(element.x+element.size>1000){
+                    element.dX = -1*element.step    
+                }
+                 if(element.x-element.size<0){
+                    element.dX = element.step
+                }
+                if(element.y-element.size<0){
+                    element.dY = element.step    
+                }
+                 if(element.y+element.size>800){
+                    element.dY = -1*element.step
+                }
+                  return  element = {
+                             id : element.id,
+                             name : element.name,
+                             x : element.x + element.dX,
+                             y : element.y + element.dY,
+                             color : element.color,
+                             txtColor : element.txtColor,
+                             sizeTxt : element.sizeTxt,
+                             size : element.size,
+                             step : 1,
+                             dX : element.dX,
+                             dY : element.dY,  
+                            }
+                        })                  
+         this.setState({
+                 elementList : newPos
+             })   
+     }
+
+     clearCanvas(){
+         const c = document.getElementById("canvas");
+         const ctx = c.getContext("2d");
+         ctx.clearRect(0, 0, c.width, c.height);
+     }
+
+        componentDidMount() {
+                     this.interval = setInterval(this.moveElement, 30);
+                }
+
+        componentWillUnmount() {
+                     this.interval = setInterval(this.interval);
+                }
+
+    render() {
+        return (
+            <div>
+                <h1>
+                    Collision of chemical elements
+                </h1>
+                <button onClick={this.addElement}>Generate element</button>
+                <button >MOVE</button>
+                <div>
+                
+                </div>
+                <DrawElements 
+                    elements = {this.state.elementList} 
+                    step = {this.state.element.step} />
             </div>
         )
     }

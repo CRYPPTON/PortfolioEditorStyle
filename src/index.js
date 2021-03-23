@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
-import './style/meme.css'
+import App from './App.js'
+import './style.css'
+
 
 ReactDOM.render(
     <App />,
