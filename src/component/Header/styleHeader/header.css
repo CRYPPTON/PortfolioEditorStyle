@@ -1,0 +1,15 @@
+.header {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 40px;
+    background-color: #3C3C3C;
+}
+
+
+.icon{
+    margin: 0;
+    padding: 3px;
+    width: 10%;
+    text-align: center;
+}

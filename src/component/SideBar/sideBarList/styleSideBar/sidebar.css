@@ -1,0 +1,41 @@
+.sideBar-container{
+ position : absolute;
+ width: 8%;
+ height: 100%;
+ background-color: #333333;
+}
+
+.side-bar {
+    margin : 0;
+    background-color: #333333;
+    border: solid 2px transparent;
+}
+
+.side-bar ul {
+    padding: 0;
+    margin: 0;
+    left: 0;
+}
+
+.side-bar-list {   
+    text-align: center;
+    width: 100%;
+    padding: 10px 0px 10px 0px;
+    background-color: #333333;
+    list-style: none;
+}
+
+
+.side-bar-list a{    
+    font-family: helvetica,
+    arial,
+    serif;
+    padding:  10px;
+    text-decoration: none;
+    color: #858585;
+    background-color: #333333;
+}
+
+.side-bar-list a:hover {
+    color: #FFFFFF
+}

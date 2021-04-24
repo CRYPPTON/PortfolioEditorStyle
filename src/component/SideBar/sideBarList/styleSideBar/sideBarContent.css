@@ -1,0 +1,41 @@
+.Left-conteiner {
+    box-sizing: border-box;
+
+}
+
+.Left-conteiner div {
+    display: inline-block;
+    
+}
+
+.Right-conteiner {
+    position : absolute;
+    margin-left: 8%;
+    width: 12%;
+    height: 100%;
+    background-color: #252526;
+}
+
+.Right-conteiner details {
+    margin: 10px auto;
+    border-bottom: #474747 solid 1px;
+}
+
+.sideBar-content {  
+    width: 100%;
+}
+
+.sideBar-content h3 {
+    color : #BBBBBB;
+    padding: 5px 0 0 5px;
+}
+
+.sideBar-content p{
+    cursor: pointer;
+    color : #E2C08D;
+    padding: 5px 0 0 30px;
+}
+
+.sideBar-content p:hover {
+  background-color: #37373D;
+}
